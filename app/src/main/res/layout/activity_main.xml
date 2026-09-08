@@ -7,13 +7,14 @@
     android:layout_height="match_parent"
     android:background="#F5F5F5">
 
+    <!-- HEADER -->
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="#1976D2">
+        android:background="#673AB7">
 
         <TextView
             android:layout_width="match_parent"
@@ -35,13 +36,28 @@
 
     </LinearLayout>
 
+    <!-- BARRA DE BUSQUEDA -->
+    <EditText
+        android:id="@+id/etBuscar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="10dp"
+        android:hint="🔍 Buscar tarea..."
+        android:inputType="text"
+        android:padding="12dp"
+        android:background="@android:drawable/editbox_background"/>
+
+    <!-- FILTRO -->
     <LinearLayout
         android:id="@+id/filtroLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="12dp"
-        android:layout_below="@id/header">
+        android:layout_below="@id/etBuscar">
 
         <TextView
             android:layout_width="wrap_content"
@@ -60,15 +76,45 @@
 
     </LinearLayout>
 
+    <!-- ORDENAMIENTO -->
+    <LinearLayout
+        android:id="@+id/ordenLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="8dp"
+        android:layout_below="@id/filtroLayout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ordenar:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_vertical"/>
+
+        <Spinner
+            android:id="@+id/spinnerOrden"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
+
+    <!-- LISTA DE TAREAS -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerTareas"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/filtroLayout"
+        android:layout_below="@id/ordenLayout"
         android:layout_above="@+id/btnNuevaTarea"
         android:padding="8dp"
         android:clipToPadding="false"/>
 
+    <!-- BOTON NUEVA TAREA -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnNuevaTarea"
         android:layout_width="wrap_content"

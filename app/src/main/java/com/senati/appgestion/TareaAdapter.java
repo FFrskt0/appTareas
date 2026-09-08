@@ -1,7 +1,9 @@
 package com.senati.appgestion;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class TareaAdapter extends RecyclerView.Adapter<TareaAdapter.TareaViewHolder> {
+public class TareaAdapter
+        extends RecyclerView.Adapter<TareaAdapter.TareaViewHolder> {
 
     private Context context;
     private ArrayList<Tarea> listaTareas;
     private DatabaseHelper databaseHelper;
 
-    public TareaAdapter(Context context, ArrayList<Tarea> listaTareas) {
+    public TareaAdapter(
+            Context context,
+            ArrayList<Tarea> listaTareas) {
 
         this.context = context;
         this.listaTareas = listaTareas;
@@ -28,55 +33,172 @@ public class TareaAdapter extends RecyclerView.Adapter<TareaAdapter.TareaViewHol
 
     @NonNull
     @Override
-    public TareaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public TareaViewHolder onCreateViewHolder(
+            @NonNull ViewGroup parent,
+            int viewType) {
 
         View view = LayoutInflater.from(context)
-                .inflate(R.layout.item_tarea, parent, false);
+                .inflate(
+                        R.layout.item_tarea,
+                        parent,
+                        false
+                );
 
         return new TareaViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TareaViewHolder holder, int position) {
+    public void onBindViewHolder(
+            @NonNull TareaViewHolder holder,
+            int position) {
 
         Tarea tarea = listaTareas.get(position);
 
-        holder.txtTitulo.setText(tarea.getTitulo());
-        holder.txtDescripcion.setText(tarea.getDescripcion());
-        holder.txtEstado.setText("Estado: " + tarea.getEstado());
-        holder.txtFecha.setText("Vencimiento: " + tarea.getFechaVencimiento());
-        holder.txtFechaCreacion.setText("Creada: " + tarea.getFechaCreacion());
-        holder.txtUsuario.setText("Usuario: " + tarea.getUsuario());
+        holder.txtTitulo.setText(
+                tarea.getTitulo()
+        );
+
+        holder.txtDescripcion.setText(
+                tarea.getDescripcion()
+        );
+
+        holder.txtEstado.setText(
+                "Estado: " + tarea.getEstado()
+        );
+
+        holder.txtFecha.setText(
+                "Vencimiento: "
+                        + tarea.getFechaVencimiento()
+        );
+
+        holder.txtFechaCreacion.setText(
+                "Creada: "
+                        + tarea.getFechaCreacion()
+        );
+
+        holder.txtUsuario.setText(
+                "Usuario: "
+                        + tarea.getUsuario()
+        );
+
+        // ==========================
+        // COLOR SEGÚN ESTADO
+        // ==========================
+
+        String estado = tarea.getEstado();
+
+        if (estado != null) {
+
+            if (estado.equalsIgnoreCase("Pendiente")) {
+
+                holder.txtEstado.setTextColor(
+                        Color.rgb(211, 47, 47)
+                );
+
+            } else if (
+                    estado.equalsIgnoreCase("En progreso")) {
+
+                holder.txtEstado.setTextColor(
+                        Color.rgb(25, 118, 210)
+                );
+
+            } else if (
+                    estado.equalsIgnoreCase("Completada")) {
+
+                holder.txtEstado.setTextColor(
+                        Color.rgb(46, 125, 50)
+                );
+
+            } else {
+
+                holder.txtEstado.setTextColor(
+                        Color.DKGRAY
+                );
+            }
+        }
+
+        // ==========================
+        // EDITAR
+        // ==========================
 
         holder.btnEditar.setOnClickListener(v -> {
 
-            Intent intent = new Intent(context, FormularioTareaActivity.class);
+            Intent intent = new Intent(
+                    context,
+                    FormularioTareaActivity.class
+            );
 
-            intent.putExtra("id", tarea.getId());
-            intent.putExtra("titulo", tarea.getTitulo());
-            intent.putExtra("descripcion", tarea.getDescripcion());
-            intent.putExtra("estado", tarea.getEstado());
-            intent.putExtra("fecha_vencimiento", tarea.getFechaVencimiento());
-            intent.putExtra("fecha_creacion", tarea.getFechaCreacion());
-            intent.putExtra("usuario", tarea.getUsuario());
+            intent.putExtra(
+                    "id",
+                    tarea.getId()
+            );
+
+            intent.putExtra(
+                    "titulo",
+                    tarea.getTitulo()
+            );
+
+            intent.putExtra(
+                    "descripcion",
+                    tarea.getDescripcion()
+            );
+
+            intent.putExtra(
+                    "estado",
+                    tarea.getEstado()
+            );
+
+            intent.putExtra(
+                    "fecha_vencimiento",
+                    tarea.getFechaVencimiento()
+            );
+
+            intent.putExtra(
+                    "fecha_creacion",
+                    tarea.getFechaCreacion()
+            );
+
+            intent.putExtra(
+                    "usuario",
+                    tarea.getUsuario()
+            );
 
             context.startActivity(intent);
         });
+
+        // ==========================
+        // ELIMINAR
+        // ==========================
 
         holder.btnEliminar.setOnClickListener(v -> {
 
             new AlertDialog.Builder(context)
                     .setTitle("Eliminar tarea")
-                    .setMessage("¿Deseas eliminar esta tarea?")
-                    .setPositiveButton("Sí", (dialog, which) -> {
+                    .setMessage(
+                            "¿Deseas eliminar esta tarea?"
+                    )
+                    .setPositiveButton(
+                            "Sí",
+                            (dialog, which) -> {
 
-                        databaseHelper.eliminarTarea(tarea.getId());
+                                databaseHelper.eliminarTarea(
+                                        tarea.getId()
+                                );
 
-                        listaTareas.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, listaTareas.size());
-                    })
-                    .setNegativeButton("No", null)
+                                listaTareas.remove(position);
+
+                                notifyItemRemoved(position);
+
+                                notifyItemRangeChanged(
+                                        position,
+                                        listaTareas.size()
+                                );
+                            }
+                    )
+                    .setNegativeButton(
+                            "No",
+                            null
+                    )
                     .show();
         });
     }
@@ -86,7 +208,8 @@ public class TareaAdapter extends RecyclerView.Adapter<TareaAdapter.TareaViewHol
         return listaTareas.size();
     }
 
-    public static class TareaViewHolder extends RecyclerView.ViewHolder {
+    public static class TareaViewHolder
+            extends RecyclerView.ViewHolder {
 
         TextView txtTitulo;
         TextView txtDescripcion;
@@ -97,19 +220,51 @@ public class TareaAdapter extends RecyclerView.Adapter<TareaAdapter.TareaViewHol
 
         Button btnEditar;
         Button btnEliminar;
-        public TareaViewHolder(@NonNull View itemView) {
+
+        public TareaViewHolder(
+                @NonNull View itemView) {
 
             super(itemView);
 
-            txtTitulo = itemView.findViewById(R.id.txtTitulo);
-            txtDescripcion = itemView.findViewById(R.id.txtDescripcion);
-            txtEstado = itemView.findViewById(R.id.txtEstado);
-            txtFecha = itemView.findViewById(R.id.txtFecha);
-            txtFechaCreacion = itemView.findViewById(R.id.txtFechaCreacion);
-            txtUsuario = itemView.findViewById(R.id.txtUsuario);
+            txtTitulo =
+                    itemView.findViewById(
+                            R.id.txtTitulo
+                    );
 
-            btnEditar = itemView.findViewById(R.id.btnEditar);
-            btnEliminar = itemView.findViewById(R.id.btnEliminar);
+            txtDescripcion =
+                    itemView.findViewById(
+                            R.id.txtDescripcion
+                    );
+
+            txtEstado =
+                    itemView.findViewById(
+                            R.id.txtEstado
+                    );
+
+            txtFecha =
+                    itemView.findViewById(
+                            R.id.txtFecha
+                    );
+
+            txtFechaCreacion =
+                    itemView.findViewById(
+                            R.id.txtFechaCreacion
+                    );
+
+            txtUsuario =
+                    itemView.findViewById(
+                            R.id.txtUsuario
+                    );
+
+            btnEditar =
+                    itemView.findViewById(
+                            R.id.btnEditar
+                    );
+
+            btnEliminar =
+                    itemView.findViewById(
+                            R.id.btnEliminar
+                    );
         }
     }
 }
