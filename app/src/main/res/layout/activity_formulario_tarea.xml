@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Título de la tarea"
+            android:textColor="@color/black"
             android:textStyle="bold"/>
 
         <EditText
@@ -40,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Descripción"
+            android:textColor="@color/black"
             android:textStyle="bold"/>
 
         <EditText
@@ -55,6 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Estado"
+            android:textColor="@color/black"
             android:textStyle="bold"/>
 
         <Spinner
@@ -67,6 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Fecha de vencimiento"
+            android:textColor="@color/black"
             android:textStyle="bold"/>
 
         <LinearLayout
@@ -95,6 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Usuario asignado"
+            android:textColor="@color/black"
             android:textStyle="bold"
             android:layout_marginTop="15dp"/>
 
