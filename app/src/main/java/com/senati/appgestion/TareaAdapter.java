@@ -15,17 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class TareaAdapter
-        extends RecyclerView.Adapter<TareaAdapter.TareaViewHolder> {
+public class TareaAdapter extends RecyclerView.Adapter<TareaAdapter.TareaViewHolder> {
 
     private Context context;
     private ArrayList<Tarea> listaTareas;
     private DatabaseHelper databaseHelper;
 
-    public TareaAdapter(
-            Context context,
-            ArrayList<Tarea> listaTareas) {
-
+    public TareaAdapter(Context context, ArrayList<Tarea> listaTareas) {
         this.context = context;
         this.listaTareas = listaTareas;
         this.databaseHelper = new DatabaseHelper(context);
@@ -38,11 +34,7 @@ public class TareaAdapter
             int viewType) {
 
         View view = LayoutInflater.from(context)
-                .inflate(
-                        R.layout.item_tarea,
-                        parent,
-                        false
-                );
+                .inflate(R.layout.item_tarea, parent, false);
 
         return new TareaViewHolder(view);
     }
@@ -53,6 +45,10 @@ public class TareaAdapter
             int position) {
 
         Tarea tarea = listaTareas.get(position);
+
+        // ==========================
+        // DATOS DE LA TAREA
+        // ==========================
 
         holder.txtTitulo.setText(
                 tarea.getTitulo()
@@ -82,7 +78,7 @@ public class TareaAdapter
         );
 
         // ==========================
-        // COLOR SEGÚN ESTADO
+        // COLORES SEGÚN ESTADO
         // ==========================
 
         String estado = tarea.getEstado();
@@ -91,30 +87,59 @@ public class TareaAdapter
 
             if (estado.equalsIgnoreCase("Pendiente")) {
 
+                // ROJO
+                holder.viewEstadoColor.setBackgroundColor(
+                        Color.rgb(244, 67, 54)
+                );
+
                 holder.txtEstado.setTextColor(
-                        Color.rgb(211, 47, 47)
+                        Color.rgb(244, 67, 54)
                 );
 
             } else if (
                     estado.equalsIgnoreCase("En progreso")) {
 
+                // AZUL
+                holder.viewEstadoColor.setBackgroundColor(
+                        Color.rgb(33, 150, 243)
+                );
+
                 holder.txtEstado.setTextColor(
-                        Color.rgb(25, 118, 210)
+                        Color.rgb(33, 150, 243)
                 );
 
             } else if (
                     estado.equalsIgnoreCase("Completada")) {
 
+                // VERDE
+                holder.viewEstadoColor.setBackgroundColor(
+                        Color.rgb(76, 175, 80)
+                );
+
                 holder.txtEstado.setTextColor(
-                        Color.rgb(46, 125, 50)
+                        Color.rgb(76, 175, 80)
                 );
 
             } else {
+
+                holder.viewEstadoColor.setBackgroundColor(
+                        Color.GRAY
+                );
 
                 holder.txtEstado.setTextColor(
                         Color.DKGRAY
                 );
             }
+
+        } else {
+
+            holder.viewEstadoColor.setBackgroundColor(
+                    Color.GRAY
+            );
+
+            holder.txtEstado.setTextColor(
+                    Color.DKGRAY
+            );
         }
 
         // ==========================
@@ -173,10 +198,13 @@ public class TareaAdapter
         holder.btnEliminar.setOnClickListener(v -> {
 
             new AlertDialog.Builder(context)
+
                     .setTitle("Eliminar tarea")
+
                     .setMessage(
                             "¿Deseas eliminar esta tarea?"
                     )
+
                     .setPositiveButton(
                             "Sí",
                             (dialog, which) -> {
@@ -185,20 +213,21 @@ public class TareaAdapter
                                         tarea.getId()
                                 );
 
-                                listaTareas.remove(position);
+                                listaTareas.remove(
+                                        holder.getAdapterPosition()
+                                );
 
-                                notifyItemRemoved(position);
-
-                                notifyItemRangeChanged(
-                                        position,
-                                        listaTareas.size()
+                                notifyItemRemoved(
+                                        holder.getAdapterPosition()
                                 );
                             }
                     )
+
                     .setNegativeButton(
                             "No",
                             null
                     )
+
                     .show();
         });
     }
@@ -220,6 +249,8 @@ public class TareaAdapter
 
         Button btnEditar;
         Button btnEliminar;
+
+        View viewEstadoColor;
 
         public TareaViewHolder(
                 @NonNull View itemView) {
@@ -264,6 +295,11 @@ public class TareaAdapter
             btnEliminar =
                     itemView.findViewById(
                             R.id.btnEliminar
+                    );
+
+            viewEstadoColor =
+                    itemView.findViewById(
+                            R.id.viewEstadoColor
                     );
         }
     }

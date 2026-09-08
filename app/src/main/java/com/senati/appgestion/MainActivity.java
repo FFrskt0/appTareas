@@ -27,6 +27,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerTareas;
+
     private FloatingActionButton btnNuevaTarea;
 
     private Spinner spinnerFiltro;
@@ -37,55 +38,100 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
 
     private ArrayList<Tarea> listaTareas;
+
     private TareaAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
-        recyclerTareas = findViewById(R.id.recyclerTareas);
-        btnNuevaTarea = findViewById(R.id.btnNuevaTarea);
 
-        spinnerFiltro = findViewById(R.id.spinnerFiltro);
-        spinnerOrden = findViewById(R.id.spinnerOrden);
+        // ==========================
+        // REFERENCIAS
+        // ==========================
 
-        etBuscar = findViewById(R.id.etBuscar);
+        recyclerTareas =
+                findViewById(R.id.recyclerTareas);
 
-        databaseHelper = new DatabaseHelper(this);
+        btnNuevaTarea =
+                findViewById(R.id.btnNuevaTarea);
+
+        spinnerFiltro =
+                findViewById(R.id.spinnerFiltro);
+
+        spinnerOrden =
+                findViewById(R.id.spinnerOrden);
+
+        etBuscar =
+                findViewById(R.id.etBuscar);
+
+
+        // ==========================
+        // BASE DE DATOS
+        // ==========================
+
+        databaseHelper =
+                new DatabaseHelper(this);
+
+
+        // ==========================
+        // RECYCLERVIEW
+        // ==========================
 
         recyclerTareas.setLayoutManager(
                 new LinearLayoutManager(this)
         );
 
-        configurarFiltro();
+
+        // ==========================
+        // CONFIGURACIONES
+        // ==========================
+
         configurarOrden();
+
+        configurarFiltro();
+
         configurarBusqueda();
+
+
+        // ==========================
+        // NUEVA TAREA
+        // ==========================
 
         btnNuevaTarea.setOnClickListener(v -> {
 
-            Intent intent = new Intent(
-                    MainActivity.this,
-                    FormularioTareaActivity.class
-            );
+            Intent intent =
+                    new Intent(
+                            MainActivity.this,
+                            FormularioTareaActivity.class
+                    );
 
             startActivity(intent);
         });
     }
 
-    // ==========================
+
+    // ==================================================
     // FILTRO POR ESTADO
-    // ==========================
+    // ==================================================
 
     private void configurarFiltro() {
 
         String[] filtros = {
+
                 "Todas",
+
                 "Pendiente",
+
                 "En progreso",
+
                 "Completada"
         };
+
 
         ArrayAdapter<String> spinnerAdapter =
                 new ArrayAdapter<>(
@@ -94,11 +140,16 @@ public class MainActivity extends AppCompatActivity {
                         filtros
                 );
 
+
         spinnerAdapter.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item
         );
 
-        spinnerFiltro.setAdapter(spinnerAdapter);
+
+        spinnerFiltro.setAdapter(
+                spinnerAdapter
+        );
+
 
         spinnerFiltro.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
@@ -113,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
                         cargarTareas();
                     }
 
+
                     @Override
                     public void onNothingSelected(
                             AdapterView<?> parent) {
@@ -121,18 +173,24 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    // ==========================
+
+    // ==================================================
     // ORDENAMIENTO
-    // ==========================
+    // ==================================================
 
     private void configurarOrden() {
 
         String[] ordenes = {
+
                 "Fecha de vencimiento",
+
                 "Fecha de creación",
+
                 "Título A-Z",
+
                 "Título Z-A"
         };
+
 
         ArrayAdapter<String> spinnerAdapter =
                 new ArrayAdapter<>(
@@ -141,11 +199,16 @@ public class MainActivity extends AppCompatActivity {
                         ordenes
                 );
 
+
         spinnerAdapter.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item
         );
 
-        spinnerOrden.setAdapter(spinnerAdapter);
+
+        spinnerOrden.setAdapter(
+                spinnerAdapter
+        );
+
 
         spinnerOrden.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
@@ -160,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
                         cargarTareas();
                     }
 
+
                     @Override
                     public void onNothingSelected(
                             AdapterView<?> parent) {
@@ -168,9 +232,10 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    // ==========================
+
+    // ==================================================
     // BÚSQUEDA
-    // ==========================
+    // ==================================================
 
     private void configurarBusqueda() {
 
@@ -185,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
                             int after) {
                     }
 
+
                     @Override
                     public void onTextChanged(
                             CharSequence s,
@@ -195,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
                         cargarTareas();
                     }
 
+
                     @Override
                     public void afterTextChanged(
                             Editable s) {
@@ -203,55 +270,95 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    // ==========================
+
+    // ==================================================
     // CARGAR TAREAS
-    // ==========================
+    // ==================================================
 
     private void cargarTareas() {
 
-        String filtro = spinnerFiltro.getSelectedItem().toString();
+        if (spinnerFiltro.getSelectedItem() == null) {
+            return;
+        }
+
+
+        String filtro =
+                spinnerFiltro
+                        .getSelectedItem()
+                        .toString();
+
 
         String textoBusqueda =
-                etBuscar.getText().toString().trim().toLowerCase();
+                etBuscar
+                        .getText()
+                        .toString()
+                        .trim()
+                        .toLowerCase();
 
-        // Obtener tareas según estado
+
+        // ==========================
+        // OBTENER DE SQLITE
+        // ==========================
 
         if (filtro.equals("Todas")) {
 
-            listaTareas = databaseHelper.obtenerTareas();
+            listaTareas =
+                    databaseHelper.obtenerTareas();
 
         } else {
 
             listaTareas =
-                    databaseHelper.obtenerTareasPorEstado(filtro);
+                    databaseHelper
+                            .obtenerTareasPorEstado(
+                                    filtro
+                            );
         }
 
+
         // ==========================
-        // APLICAR BÚSQUEDA
+        // BÚSQUEDA
         // ==========================
 
         if (!textoBusqueda.isEmpty()) {
 
-            ArrayList<Tarea> tareasFiltradas =
+            ArrayList<Tarea>
+                    tareasFiltradas =
                     new ArrayList<>();
+
 
             for (Tarea tarea : listaTareas) {
 
                 String titulo =
-                        tarea.getTitulo().toLowerCase();
+                        tarea.getTitulo() == null
+                                ? ""
+                                : tarea.getTitulo()
+                                .toLowerCase();
+
 
                 String descripcion =
-                        tarea.getDescripcion().toLowerCase();
+                        tarea.getDescripcion() == null
+                                ? ""
+                                : tarea.getDescripcion()
+                                .toLowerCase();
 
-                if (titulo.contains(textoBusqueda)
-                        || descripcion.contains(textoBusqueda)) {
 
-                    tareasFiltradas.add(tarea);
+                if (titulo.contains(
+                        textoBusqueda)
+                        ||
+                        descripcion.contains(
+                                textoBusqueda)) {
+
+                    tareasFiltradas.add(
+                            tarea
+                    );
                 }
             }
 
-            listaTareas = tareasFiltradas;
+
+            listaTareas =
+                    tareasFiltradas;
         }
+
 
         // ==========================
         // ORDENAR
@@ -259,31 +366,53 @@ public class MainActivity extends AppCompatActivity {
 
         ordenarTareas();
 
+
         // ==========================
         // MOSTRAR
         // ==========================
 
-        adapter = new TareaAdapter(
-                this,
-                listaTareas
-        );
+        adapter =
+                new TareaAdapter(
+                        this,
+                        listaTareas
+                );
 
-        recyclerTareas.setAdapter(adapter);
+
+        recyclerTareas.setAdapter(
+                adapter
+        );
     }
 
-    // ==========================
-    // MÉTODO DE ORDENAMIENTO
-    // ==========================
+
+    // ==================================================
+    // ORDENAR TAREAS
+    // ==================================================
 
     private void ordenarTareas() {
 
-        if (listaTareas == null ||
-                listaTareas.size() <= 1) {
+        if (listaTareas == null
+                || listaTareas.size() <= 1) {
+
+            return;
+        }
+
+        // Evita errores si el Spinner todavía no tiene
+        // un elemento seleccionado
+        if (spinnerOrden == null
+                || spinnerOrden.getSelectedItem() == null) {
+
             return;
         }
 
         String orden =
-                spinnerOrden.getSelectedItem().toString();
+                spinnerOrden
+                        .getSelectedItem()
+                        .toString();
+
+
+        // ==========================
+        // TÍTULO A-Z
+        // ==========================
 
         if (orden.equals("Título A-Z")) {
 
@@ -296,15 +425,23 @@ public class MainActivity extends AppCompatActivity {
                                 Tarea t1,
                                 Tarea t2) {
 
-                            return t1.getTitulo()
+                            return t1
+                                    .getTitulo()
                                     .compareToIgnoreCase(
                                             t2.getTitulo()
                                     );
                         }
                     }
             );
+        }
 
-        } else if (orden.equals("Título Z-A")) {
+
+        // ==========================
+        // TÍTULO Z-A
+        // ==========================
+
+        else if (
+                orden.equals("Título Z-A")) {
 
             Collections.sort(
                     listaTareas,
@@ -315,15 +452,24 @@ public class MainActivity extends AppCompatActivity {
                                 Tarea t1,
                                 Tarea t2) {
 
-                            return t2.getTitulo()
+                            return t2
+                                    .getTitulo()
                                     .compareToIgnoreCase(
                                             t1.getTitulo()
                                     );
                         }
                     }
             );
+        }
 
-        } else if (orden.equals("Fecha de vencimiento")) {
+
+        // ==========================
+        // FECHA VENCIMIENTO
+        // ==========================
+
+        else if (
+                orden.equals(
+                        "Fecha de vencimiento")) {
 
             Collections.sort(
                     listaTareas,
@@ -351,8 +497,16 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
             );
+        }
 
-        } else if (orden.equals("Fecha de creación")) {
+
+        // ==========================
+        // FECHA CREACIÓN
+        // ==========================
+
+        else if (
+                orden.equals(
+                        "Fecha de creación")) {
 
             Collections.sort(
                     listaTareas,
@@ -383,21 +537,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // ==========================
+
+    // ==================================================
     // CONVERTIR FECHA
-    // ==========================
+    // ==================================================
 
-    private Date convertirFecha(String fecha) {
+    private Date convertirFecha(
+            String fecha) {
 
-        if (fecha == null || fecha.isEmpty()) {
+        if (fecha == null
+                || fecha.isEmpty()) {
+
             return null;
         }
 
+
         String[] formatos = {
+
                 "dd/MM/yyyy",
+
                 "dd-MM-yyyy",
+
                 "yyyy-MM-dd"
         };
+
 
         for (String formato : formatos) {
 
@@ -409,52 +572,62 @@ public class MainActivity extends AppCompatActivity {
                                 Locale.getDefault()
                         );
 
+
                 sdf.setLenient(false);
+
 
                 return sdf.parse(fecha);
 
             } catch (ParseException e) {
+
                 // Intentar siguiente formato
             }
         }
 
+
         return null;
     }
 
-    // ==========================
+
+    // ==================================================
     // COMPARAR FECHAS
-    // ==========================
+    // ==================================================
 
     private int compararFechas(
             Date fecha1,
             Date fecha2) {
 
-        if (fecha1 == null && fecha2 == null) {
+        if (fecha1 == null
+                && fecha2 == null) {
+
             return 0;
         }
 
+
         if (fecha1 == null) {
+
             return 1;
         }
 
+
         if (fecha2 == null) {
+
             return -1;
         }
 
-        return fecha1.compareTo(fecha2);
+
+        return fecha1.compareTo(
+                fecha2
+        );
     }
 
-    // ==========================
-    // VOLVER A CARGAR
-    // ==========================
+
+    // ==================================================
+    // RECARGAR AL VOLVER
+    // ==================================================
 
     @Override
     protected void onResume() {
-
         super.onResume();
-
-        if (databaseHelper != null) {
-            cargarTareas();
-        }
     }
 }
